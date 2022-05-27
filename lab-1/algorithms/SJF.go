@@ -2,40 +2,34 @@ package algorithms
 
 import (
 	"github.com/YevheniiOrlovEngineering/Operating-Systems/lab-1/process"
-	"github.com/YevheniiOrlovEngineering/Operating-Systems/lab-1/utils"
 )
 
-// setProcessStats computes process specs after its completion
-func setProcessStats(p *process.Process, t int) {
-	p.St = t
-	p.Ft = t + p.Bt
-	p.Wt = p.At + t
-	p.Tat = p.At + p.Ft
-}
-
 // SJF produces process executing order according to SJF algorithm
-func SJF(pList []process.Process) []process.Process {
+func SJF(pList []process.Process) ([]process.Process, int, int) {
 	var wQ []process.Process
 	var dQ []process.Process
-	pNum, ct := len(pList), 0
+	ct := 0
 
-	for len(dQ) != pNum {
-		if len(pList) > 0 && pList[0].At <= ct {
-			notA := utils.GetIdxByAt(pList, ct)
-			for j := 0; j < notA; j++ {
+	process.SortArrivalBurst(pList)
+	for len(pList) != 0 {
+		if pList[0].At <= ct || len(wQ) != 0 {
+			pNotArrIdx := process.GetIdxByAt(pList, ct) + 1
+			for j := 0; j < pNotArrIdx; j++ {
 				wQ = append(wQ, pList[j])
 			}
-			utils.SortBurstArrival(wQ)
-			pList = utils.RemoveProcesses(pList, 0, notA-1)
-		} else if len(pList) != 0 {
-			ct++
-			continue
+			process.SortBurstArrival(wQ)
+			pList = process.RemoveProcesses(pList, 0, pNotArrIdx-1)
+
+			p := wQ[0]
+			SetProcessSpecs(&p, ct)
+			dQ = append(dQ, p)
+			wQ = wQ[1:]
+			ct = p.Ft
+		} else {
+			ct = pList[0].At
 		}
-		p := wQ[0]
-		setProcessStats(&p, ct)
-		dQ = append(dQ, p)
-		wQ = wQ[1:]
-		ct += p.Bt
 	}
-	return dQ
+	dQ = ComputeProcesses(wQ, dQ, ct)
+	avgWt, avgTat := EvalAvgStats(dQ)
+	return dQ, avgWt, avgTat
 }
