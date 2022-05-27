@@ -2,7 +2,7 @@ package process
 
 const (
 	PNumMax     int = 10
-	PArrTimeMax int = 5
+	PArrTimeMax int = 10
 	PBurTimeMax int = 10
 )
 

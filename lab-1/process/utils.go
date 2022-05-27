@@ -1,7 +1,6 @@
-package utils
+package process
 
 import (
-	"github.com/YevheniiOrlovEngineering/Operating-Systems/lab-1/process"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -9,37 +8,31 @@ import (
 )
 
 // GenerateProc generates process list with all specs
-func GenerateProc() []process.Process {
+func GenerateProc() []Process {
 	rand.Seed(time.Now().UnixNano())
-	pList := make([]process.Process, rand.Intn(process.PNumMax-1)+1)
+	pList := make([]Process, rand.Intn(PNumMax-1)+1)
 
 	for i := 0; i < len(pList); i++ {
 		id := "P" + strconv.Itoa(i)
-		at := rand.Intn(process.PArrTimeMax)
-		bt := rand.Intn(process.PBurTimeMax-1) + 1
+		at := rand.Intn(PArrTimeMax)
+		bt := rand.Intn(PBurTimeMax-1) + 1
 
-		pList[i] = process.Process{
+		pList[i] = Process{
 			Id: id,
 			At: at,
 			Bt: bt,
 		}
 	}
-	sortArrivalBurst(pList)
 	return pList
 }
 
 // RemoveProcesses pops out processes from i_th to j_th
-func RemoveProcesses(s []process.Process, i int, j int) []process.Process {
-	return append(s[:i], s[j+1:]...)
-}
-
-// RemoveInts pops out integers from i_th to j_th
-func RemoveInts(s []int, i int, j int) []int {
+func RemoveProcesses(s []Process, i int, j int) []Process {
 	return append(s[:i], s[j+1:]...)
 }
 
 // GetIdxById gets process index by id
-func GetIdxById(pList []process.Process, id string) int {
+func GetIdxById(pList []Process, id string) int {
 	for i := range pList {
 		if pList[i].Id == id {
 			return i
@@ -49,35 +42,28 @@ func GetIdxById(pList []process.Process, id string) int {
 }
 
 // GetIdxByAt gets process index by arrival time
-func GetIdxByAt(pList []process.Process, at int) int {
+func GetIdxByAt(pList []Process, at int) int {
 	return sort.Search(len(pList), func(i int) bool {
 		return pList[i].At > at
-	})
-}
-
-// GetIdxByBt gets process index by burst time
-func GetIdxByBt(pList []process.Process, bt int) int {
-	return sort.Search(len(pList), func(i int) bool {
-		return pList[i].Bt == bt
-	})
+	}) - 1
 }
 
 // sortArrival sorts slice by arrival time
-func sortArrival(pList []process.Process) {
+func sortArrival(pList []Process) {
 	sort.SliceStable(pList, func(i, j int) bool {
 		return pList[i].At < pList[j].At
 	})
 }
 
 // sortBurst sorts slice by burst time
-func sortBurst(pList []process.Process) {
+func sortBurst(pList []Process) {
 	sort.SliceStable(pList, func(i, j int) bool {
 		return pList[i].Bt < pList[j].Bt
 	})
 }
 
-// sortArrivalBurst sorts initially by arrival time and then by burst time
-func sortArrivalBurst(pList []process.Process) {
+// SortArrivalBurst sorts initially by arrival time and then by burst time
+func SortArrivalBurst(pList []Process) {
 	var atList []int
 	sortArrival(pList)
 	for i := range pList {
@@ -91,7 +77,7 @@ func sortArrivalBurst(pList []process.Process) {
 }
 
 // SortBurstArrival sorts initially by burst time and then by arrival time
-func SortBurstArrival(pList []process.Process) {
+func SortBurstArrival(pList []Process) {
 	var btList []int
 	sortBurst(pList)
 	for i := range pList {
