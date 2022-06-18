@@ -1,5 +1,4 @@
-
-package var_3.utils;
+package var_3.CoinExchanger;
 
 import java.util.HashMap;
 import java.util.InputMismatchException;
@@ -13,11 +12,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class CoinExchanger {
     private static final List<Integer> values = List.of(1, 2, 5, 10, 25, 50, 100);
+    private final Map<Integer, Integer> coinsPool = new HashMap<>();
     private static final Map<String, String> exchangerMessages = new HashMap<>() {
         {
             this.put("success",
                                             """
-                                            [INFO] Exchanging done successfully." +
+                                            [INFO] Exchanging done successfully.
                                             [INFO] Money: [%d] coins of (%d) cent
                                             [INFO] Change: [1] coin of (%d) cent
                                             """
@@ -42,16 +42,19 @@ public class CoinExchanger {
                                             """);
             this.put("change error",
                                             """
-                                            [ERROR] Exchanging done with error.[ERROR] The coins amount [%d] of change (%d) coins
+                                            [ERROR] Exchanging done with error.
+                                            [ERROR] The coins amount [%d] of change (%d) coins
                                             [ERROR] is not enough to exchange (%d) cent coin
                                             """);
         }
     };
-    private final Map<Integer, Integer> coinsPool = new HashMap<>();
+
     private int coinToExchange;
     private int coinValueToBeExchangedBy;
+
     private boolean coinPassed = false;
     private boolean exchangerWorking = false;
+
     private final Lock lock = new ReentrantLock();
     private final Condition PassedCoin;
     private final Condition FinishExchanging;

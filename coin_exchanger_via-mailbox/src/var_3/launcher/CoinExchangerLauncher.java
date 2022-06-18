@@ -1,8 +1,8 @@
 package var_3.launcher;
 
-import var_3.utils.A;
-import var_3.utils.B;
-import var_3.utils.CoinExchanger;
+import var_3.CoinExchanger.A;
+import var_3.CoinExchanger.B;
+import var_3.CoinExchanger.CoinExchanger;
 
 
 public class CoinExchangerLauncher {
