@@ -1,0 +1,1 @@
+# Java version -> *openjdk-18.0.1.1*
